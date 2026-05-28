@@ -1,10 +1,19 @@
-| Donnée               | Comment c'est représenté en JSON ?                      | Comment c'est représenté en XML ?                                       |
-|:---------------------|:--------------------------------------------------------|:------------------------------------------------------------------------|
-| Pays                 | stations[] country                                      | station "country,attr"                                                  |
-| Coordonnées          | stations[] location {latitude, longitude}               | station coordinate "lat, attr", "lon, attr"                             |
-| Altitude             | stations[] altitude_m                                   | station coordinate "altitude, attr"                                     |
-| Modèle de capteur    | stations[] device.type                                  | station hardware "model, attr"                                          |
-| Température          | stations[] observations[].temperature_celsius           | station observations observation measure "type=temperature," "chardata" |
-| Conditions ciel      | stations[] observations.conditions                      | not exists                                                              |
-| Vent                 | stations[] observations.wind {speed_kmh, direction_deg} | station observations observation wind "speed, attr", "direction, attr"  |
-| Notes (optionnelles) | stations[] observations.notes                           | station observations observation wind "note, chardata"                  |
+# LECTURES
+curl -s -w '%{http_code}\n' localhost:8080/stations                       # 200
+curl -s -w '%{http_code}\n' localhost:8080/stations/FR-BOR-001            # 200
+curl -s -w '%{http_code}\n' localhost:8080/stations/FR-BOR-001/observations  # 200
+curl -s -w '%{http_code}\n' localhost:8080/stations/XX-NOPE                # 404
+
+# ÉCRITURES
+curl -s -w '%{http_code}\n' -X POST localhost:8080/stations \
+-H 'Content-Type: application/json' \
+-d '{"id":"T-001","name":"Test"}'                                  # 201
+
+curl -s -w '%{http_code}\n' -X POST localhost:8080/stations \
+-d '{"id":"T-001","name":"X"}' -H 'Content-Type: application/json'   # 409
+
+curl -s -w '%{http_code}\n' -X PUT localhost:8080/stations/T-001 \
+-d '{"name":"T2"}' -H 'Content-Type: application/json'                 # 200
+
+curl -s -w '%{http_code}\n' -X DELETE localhost:8080/stations/T-001        # 204
+curl -s -w '%{http_code}\n' -X DELETE localhost:8080/stations/T-001        # 404

@@ -25,8 +25,12 @@ func (s *Store) Get(id string) (Station, bool) {
 }
 
 func (s *Store) Delete(id string) bool {
-	delete(s.stations, id)
-	return !s.Has(id)
+	if s.Has(id) {
+		delete(s.stations, id)
+		return true
+	}
+	return false
+
 }
 
 func (s *Store) All() []Station {
@@ -41,7 +45,7 @@ func (a *App) listObservations(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	stations, ok := a.store.Get(id)
 	if !ok {
-		writeError(w, http.StatusNotFound, "not found")
+		writeError(w, http.StatusNotFound, "NOT_FOUND", "not found")
 	} else {
 		writeJSON(w, http.StatusOK, stations.Observations)
 	}

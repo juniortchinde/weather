@@ -2,6 +2,7 @@ package main
 
 type Station struct {
 	Id           string
+	Name         string
 	Country      string
 	Altitude     int
 	DeviceModel  string

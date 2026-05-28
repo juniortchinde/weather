@@ -42,6 +42,7 @@ func (a *App) getStation(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Crete new station
 func (a *App) createStation(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
