@@ -2,11 +2,22 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"weather/json"
 )
 
 func main() {
+
+	stations, err := LoadFromJson("weather_data.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	store := NewStore()
+	for _, s := range stations {
+		store.Put(s)
+	}
+	log.Printf("bootstrap : %d stations chargées", len(stations))
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "ok")
@@ -31,11 +42,20 @@ var countryMap = map[string]string{
 	"Tchéquie":  "CZ",
 }
 
-func TransformJsonToModel(extractedJson json.Stations) (st []Station) {
+func LoadFromJson(path string) ([]Station, error) {
+	jsonStations, err := json.ExtractJson(path)
+	if err != nil {
+		return nil, err
+	}
+	return transformJsonToModel(jsonStations), nil
+}
+
+func transformJsonToModel(extractedJson json.Stations) (st []Station) {
 
 	for _, stationJson := range extractedJson.Stations {
 		var station Station
 
+		station.Id = stationJson.Id
 		station.Country = countryMap[stationJson.Country]
 		station.Altitude = stationJson.Altitude
 		station.DeviceModel = stationJson.Device.Model
