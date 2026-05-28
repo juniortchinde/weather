@@ -2,9 +2,18 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"weather/json"
 	"weather/xml"
 )
+
+func main() {
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, "ok")
+	})
+	http.ListenAndServe(":8080", mux)
+}
 
 var countryMap = map[string]string{
 	"France":    "FR",
@@ -21,35 +30,6 @@ var countryMap = map[string]string{
 	"Norvège":   "NO",
 	"Pologne":   "PL",
 	"Tchéquie":  "CZ",
-}
-
-// TIP <p>To run your code, right-click the code and select <b>Run</b>.</p> <p>Alternatively, click
-// the <icon src="AllIcons.Actions.Execute"/> icon in the gutter and select the <b>Run</b> menu item from here.</p>
-
-func main() {
-
-	jsonStations, _ := json.ExtractJson("./data/weather_data.json")
-	st := TransformJsonToModel(jsonStations)
-	/*for _, station := range st {
-		fmt.Println("{"+
-			"country : ", station.Country, ", "+
-			"Altitude : ", station.Altitude, ", ",
-			"DeviceModel", station.DeviceModel,
-		)
-	}*/
-	fmt.Println(len(st))
-
-	xmlStations, _ := xml.ExtractXml("./data/weather_data.xml")
-	st2 := TransformXmlToModel(xmlStations)
-	for _, station := range st2 {
-		fmt.Println("{"+
-			"country : ", station.Country, ", "+
-			"Altitude : ", station.Altitude, ", ",
-			"DeviceModel", station.DeviceModel,
-		)
-	}
-
-	fmt.Println(len(xmlStations.Stations))
 }
 
 func TransformJsonToModel(extractedJson json.Stations) (st []Station) {
