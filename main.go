@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"weather/json"
+	"weather/xml"
 )
 
 var countryMap = map[string]string{
@@ -28,13 +29,21 @@ var countryMap = map[string]string{
 func main() {
 
 	jsonStations, _ := json.ExtractJson("./data/weather_data.json")
-
 	st := TransformJsonToModel(jsonStations)
 	for _, station := range st {
 		fmt.Println("{"+
 			"country : ", station.Country, ", "+
 			"Altitude : ", station.Altitude, ", ",
 			"DeviceModel", station.DeviceModel,
+		)
+	}
+
+	xmlStations, _ := xml.ExtractXml("./data/weather_data.xml")
+	for _, station := range xmlStations.Stations {
+		fmt.Println("{"+
+			"country : ", station.Country, ", "+
+			"Altitude : ", station.Hardware.Model, ", ",
+			"DeviceModel", station.Observations[0].Measures[0].Type,
 		)
 	}
 
@@ -52,6 +61,7 @@ func TransformJsonToModel(extractedJson json.Stations) (st []Station) {
 		for _, observationJson := range stationJson.Obs {
 
 			observation := Observation{
+				TimeStamp:   observationJson.Timestamp,
 				Temperature: observationJson.Temperature,
 				Condition:   observationJson.Conditions,
 				Wind: Wind{
@@ -64,6 +74,5 @@ func TransformJsonToModel(extractedJson json.Stations) (st []Station) {
 			st = append(st, station)
 		}
 	}
-
 	return
 }

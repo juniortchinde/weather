@@ -15,6 +15,7 @@ type Coordinate struct {
 }
 
 type Observation struct {
+	TimeStamp   string
 	Temperature float64
 	Condition   string
 	Wind        Wind

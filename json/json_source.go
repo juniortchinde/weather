@@ -24,6 +24,7 @@ type Device struct {
 	InstalledOn  string `json:"installed_on"`
 }
 type Observation struct {
+	Timestamp   string  `json:"timestamp"`
 	Temperature float64 `json:"temperature_celsius"`
 	Conditions  string  `json:"conditions"`
 	Wind        Wind    `json:"wind"`
@@ -44,11 +45,11 @@ func ExtractJson(path string) (stations Stations, err error) {
 	if err != nil {
 		return
 	}
-	var station Stations
+	var stationList Stations
 
-	if err = json.Unmarshal(raw, &station); err != nil {
+	if err = json.Unmarshal(raw, &stationList); err != nil {
 		fmt.Println("error:", err)
-		return station, err
+		return stationList, err
 	}
-	return station, nil
+	return stationList, nil
 }

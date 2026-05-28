@@ -7,4 +7,4 @@
 | Température          | stations[] observations[].temperature_celsius           | station observations observation measure "type=temperature," "chardata" |
 | Conditions ciel      | stations[] observations.conditions                      | not exists                                                              |
 | Vent                 | stations[] observations.wind {speed_kmh, direction_deg} | station observations observation wind "speed, attr", "direction, attr"  |
-| Notes (optionnelles) | stations[] observations.notes                           |                                                                         |
+| Notes (optionnelles) | stations[] observations.notes                           | station observations observation wind "note, chardata"                  |
