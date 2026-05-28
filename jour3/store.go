@@ -1,5 +1,7 @@
 package main
 
+import "net/http"
+
 type Store struct {
 	stations map[string]Station
 }
@@ -24,7 +26,7 @@ func (s *Store) Get(id string) (Station, bool) {
 
 func (s *Store) Delete(id string) bool {
 	delete(s.stations, id)
-	return s.Has(id)
+	return !s.Has(id)
 }
 
 func (s *Store) All() []Station {
@@ -33,4 +35,15 @@ func (s *Store) All() []Station {
 		stations = append(stations, st)
 	}
 	return stations
+}
+
+func (a *App) listObservations(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	stations, ok := a.store.Get(id)
+	if !ok {
+		writeError(w, http.StatusNotFound, "not found")
+	} else {
+		writeJSON(w, http.StatusOK, stations.Observations)
+	}
+
 }
