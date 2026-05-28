@@ -7,7 +7,8 @@ import (
 )
 
 type Stations struct {
-	Stations []StationXml `xml:"weather_dataset"`
+	XMLName  xml.Name     `xml:"weather_dataset"`
+	Stations []StationXml `xml:"station"`
 }
 type StationXml struct {
 	XMLName xml.Name `xml:"station"`
