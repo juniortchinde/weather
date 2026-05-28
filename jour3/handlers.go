@@ -58,3 +58,28 @@ func (a *App) createStation(w http.ResponseWriter, r *http.Request) {
 	a.store.Put(station)
 	writeJSON(w, http.StatusCreated, station)
 }
+
+func (a *App) updateStation(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	id := r.PathValue("id")
+	var st Station
+	dec := json.NewDecoder(r.Body)
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&st); err != nil {
+		writeError(w, 400, "JSON invalide: "+err.Error())
+		return
+	}
+	if st.Id != "" && st.Id != id {
+		writeError(w, 400, "incohérence id body vs URL")
+		return
+	}
+	
+	st.Id = id
+	created := !a.store.Has(id)
+	a.store.Put(st)
+	if created {
+		writeJSON(w, 201, st)
+		return
+	}
+	writeJSON(w, 200, st)
+}
