@@ -7,7 +7,6 @@ type Station struct {
 	DeviceModel  string
 	Location     Coordinate
 	Observations []Observation
-	Notes        *string
 }
 
 type Coordinate struct {
@@ -20,6 +19,7 @@ type Observation struct {
 	Temperature float64
 	Condition   string
 	Wind        Wind
+	Notes       *string
 }
 
 type Wind struct {

@@ -16,7 +16,6 @@ type Station struct {
 	Obs      []Observation `json:"observations"`
 	Device   Device        `json:"device"`
 	Location Coordinate    `json:"location"`
-	Notes    *string       `json:"notes"`
 }
 
 type Device struct {
@@ -29,6 +28,7 @@ type Observation struct {
 	Temperature float64 `json:"temperature_celsius"`
 	Conditions  string  `json:"conditions"`
 	Wind        Wind    `json:"wind"`
+	Notes       *string `json:"notes"`
 }
 
 type Wind struct {

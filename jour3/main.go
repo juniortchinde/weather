@@ -18,10 +18,13 @@ func main() {
 		store.Put(s)
 	}
 	log.Printf("bootstrap : %d stations chargées", len(stations))
+	app := &App{store: store}
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "ok")
 	})
+	mux.HandleFunc("GET /stations", app.listStations)
+
 	http.ListenAndServe(":8080", mux)
 }
 
@@ -72,8 +75,9 @@ func transformJsonToModel(extractedJson json.Stations) (st []Station) {
 					Direction: int(observationJson.Wind.Direction),
 				},
 			}
+			station.Observations = append(station.Observations, observation)
 		}
-		station.Observations = append(station.Observations, observation)
+
 		st = append(st, station)
 	}
 	return
